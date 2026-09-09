@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiClient } from "../services/apis"
+import { apiClient } from "../services/api"
 
 export function useInterview(userId) {
   const [sessionId, setSessionId] = useState("");
