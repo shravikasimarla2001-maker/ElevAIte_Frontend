@@ -112,6 +112,38 @@ export function OpportunityRadarScreen({ user, targetRole }) {
   }, [user]);
 
   // 2. Trigger scan / recalibrate through apiClient
+  // const handleRecalibrate = async () => {
+  //   if (!user?.uid) return;
+  //   setRecalibrating(true);
+  //   setErrorMsg("");
+  //   setSuccessMsg("");
+
+  //   try {
+  //     const [discoveryRes, scanRes] = await Promise.allSettled([
+  //       apiClient.getRadarDiscover(user.uid),
+  //       apiClient.triggerOpportunityScan(user.uid)
+  //     ]);
+
+  //     const freshOpps = discoveryRes.status === "fulfilled" 
+  //       ? (discoveryRes.value?.opportunities || discoveryRes.value)
+  //       : (scanRes.status === "fulfilled" ? scanRes.value?.opportunities : []);
+
+  //     const freshConcepts = scanRes.status === "fulfilled" 
+  //       ? (scanRes.value?.next_level_concepts || horizonData.next_level_concepts)
+  //       : horizonData.next_level_concepts;
+
+  //     setHorizonData({
+  //       next_level_concepts: freshConcepts,
+  //       opportunities: normalizeOpportunities(freshOpps)
+  //     });
+
+  //     setSuccessMsg("Radar recalibrated and updated with fresh benchmarks!");
+  //   } catch (err) {
+  //     setErrorMsg(err.message || "Failed to recalibrate radar.");
+  //   } finally {
+  //     setRecalibrating(false);
+  //   }
+  // };
   const handleRecalibrate = async () => {
     if (!user?.uid) return;
     setRecalibrating(true);
@@ -119,25 +151,15 @@ export function OpportunityRadarScreen({ user, targetRole }) {
     setSuccessMsg("");
 
     try {
-      const [discoveryRes, scanRes] = await Promise.allSettled([
-        apiClient.getRadarDiscover(user.uid),
-        apiClient.triggerOpportunityScan(user.uid)
-      ]);
-
-      const freshOpps = discoveryRes.status === "fulfilled" 
-        ? (discoveryRes.value?.opportunities || discoveryRes.value)
-        : (scanRes.status === "fulfilled" ? scanRes.value?.opportunities : []);
-
-      const freshConcepts = scanRes.status === "fulfilled" 
-        ? (scanRes.value?.next_level_concepts || horizonData.next_level_concepts)
-        : horizonData.next_level_concepts;
+      // Single unified API call
+      const res = await apiClient.triggerOpportunityScan(user.uid);
 
       setHorizonData({
-        next_level_concepts: freshConcepts,
-        opportunities: normalizeOpportunities(freshOpps)
+        next_level_concepts: res.next_level_concepts || [],
+        opportunities: normalizeOpportunities(res.opportunities || [])
       });
 
-      setSuccessMsg("Radar recalibrated and updated with fresh benchmarks!");
+      setSuccessMsg("Radar recalibrated and updated with live market opportunities!");
     } catch (err) {
       setErrorMsg(err.message || "Failed to recalibrate radar.");
     } finally {

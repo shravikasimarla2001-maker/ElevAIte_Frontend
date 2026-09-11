@@ -112,6 +112,9 @@ export function OnboardingScreen({ user, onComplete }) {
     if (resumeFile) formData.append("resume", resumeFile);
 
     try {
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
       const response = await apiClient.onboardUser(formData);
       
       if (response?.action === "resume_replaced") {

@@ -1,4 +1,4 @@
-const API_BASE = "/api/v1";
+const API_BASE = "https://elevaite-backend-vtdhnwibeq-uc.a.run.app/api/v1";
 
 export const apiClient = {
   async onboardUser(formData) {
