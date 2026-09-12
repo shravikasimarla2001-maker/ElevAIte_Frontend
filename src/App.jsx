@@ -281,7 +281,7 @@ function AppLayout() {
               </div>
 
               <RecommendationsSection 
-                items={displayRecommendations}
+                items={displayRecommendations?.items || []}
                 loading={ragLoading}
                 onRefresh={handleScanRAG}
               />
